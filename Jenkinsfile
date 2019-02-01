@@ -1,7 +1,5 @@
 pipeline {
-  agent {
-    label "jenkins-maven"
-  }
+  agent any
   environment {
     ORG = 'cb-kubecd'
     APP_NAME = 'needs-tests'
@@ -18,10 +16,8 @@ pipeline {
         HELM_RELEASE = "$PREVIEW_NAMESPACE".toLowerCase()
       }
       steps {
-        container('maven') {
-          sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-          sh "mvn install"
-        }
+        sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
+        sh "mvn install"
       }
     }
     stage('Build Release') {
@@ -29,15 +25,11 @@ pipeline {
         branch 'master'
       }
       steps {
-        container('maven') {
-          git 'https://github.com/cb-kubecd/needs-tests.git'
-
-          // so we can retrieve the version in later steps
-          sh "echo \$(jx-release-version) > VERSION"
-          sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
-          sh "jx step tag --version \$(cat VERSION)"
-          sh "mvn clean deploy"
-        }
+        // so we can retrieve the version in later steps
+        sh "echo \$(jx-release-version) > VERSION"
+        sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
+        sh "jx step tag --version \$(cat VERSION)"
+        sh "mvn clean deploy"
       }
     }
   }
