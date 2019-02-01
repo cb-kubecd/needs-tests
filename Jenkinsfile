@@ -4,6 +4,7 @@ pipeline {
     ORG = 'cb-kubecd'
     APP_NAME = 'needs-tests'
     CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
+    MAVEN_OPTS = '-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
   }
   stages {
     stage('CI Build and push snapshot') {
