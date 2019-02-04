@@ -14,5 +14,8 @@ public class DemoApplicationTests {
         assert false : "broken";
 	}
 
+    @Test
+    public void passing() {}
+
 }
 
