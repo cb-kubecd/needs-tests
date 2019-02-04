@@ -18,8 +18,7 @@ pipeline {
       }
       steps {
         sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
-        sh 'mvn -Dmaven.test.failure.ignore install'
-        sh '''jx step stash -c junit -p 'target/surefire-reports/TEST-*.xml' --basedir target/surefire-reports'''
+        sh "mvn install"
       }
     }
     stage('Build Release') {
@@ -32,7 +31,6 @@ pipeline {
         sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
         sh "jx step tag --version \$(cat VERSION)"
         sh "mvn clean deploy"
-        sh '''jx step stash -c junit -p 'target/surefire-reports/TEST-*.xml' --basedir target/surefire-reports'''
       }
     }
   }
